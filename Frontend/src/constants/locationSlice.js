@@ -4,7 +4,9 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 const fetchRestaurantDetails = async (restaurantIds) => {
   try {
     const restaurantPromises = restaurantIds.map((id) =>
-      fetch(`http://localhost:3000/restaurants/${id}`).then((res) => res.json())
+      fetch(`https://fullstack-4tzx.onrender.com/restaurants/${id}`).then(
+        (res) => res.json()
+      )
     );
     return await Promise.all(restaurantPromises);
   } catch (error) {
@@ -18,7 +20,7 @@ export const fetchRestaurantsByLocation = createAsyncThunk(
   "locationRestaurants/fetchByLocation",
   async ({ lat, lon, radius }) => {
     const response = await fetch(
-      `http://localhost:3000/restaurants/location?lat=${lat}&lon=${lon}&radius=${radius}`
+      `https://fullstack-4tzx.onrender.com/restaurants/location?lat=${lat}&lon=${lon}&radius=${radius}`
     );
     const data = await response.json();
 

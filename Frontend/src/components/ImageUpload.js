@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BASE_URL } from "../constants/constant";
 
 const ImageUpload = () => {
   const [image, setImage] = useState(null);
@@ -24,7 +25,7 @@ const ImageUpload = () => {
     formData.append("image", image);
 
     try {
-      const response = await fetch("http://localhost:3000/api/image-search", {
+      const response = await fetch(`${BASE_URL}/api/image-search`, {
         method: "POST",
         body: formData,
       });

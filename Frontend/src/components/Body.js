@@ -64,6 +64,7 @@ const Body = () => {
       return;
     }
     setIsSearching(true);
+    dispatch(clearImageResults()); // ✅ Clear previous image search results
     dispatch(fetchRestaurantsByLocation({ lat, lon, radius }));
     setLat("");
     setLon("");
@@ -78,11 +79,13 @@ const Body = () => {
     }
 
     setIsSearching(true);
-    dispatch(clearImageResults()); // Clear previous image results and errors
+    dispatch(clearLocationResults()); // ✅ Clear previous location search results
+    dispatch(clearImageResults()); // ✅ Clear previous image results and errors
 
     const formData = new FormData();
     formData.append("image", imageFile);
     dispatch(fetchRestaurantsByImage(formData));
+
     setImageFile(null);
   };
 
@@ -111,7 +114,7 @@ const Body = () => {
     <div className="h-screen bg-peach-100 flex items-center justify-center overflow-hidden p-6">
       <div className="container mx-auto w-full max-w-6xl h-full flex flex-col">
         {/* Search Section */}
-        <div className="flex flex-col md:flex-row gap-4 mb-12 bg-white rounded-2xl shadow-lg p-6 flex-shrink-0">
+        <div className="flex flex-col md:flex-row gap-4 mb-6 bg-white rounded-2xl shadow-lg p-6 flex-shrink-0">
           {/* Location Search */}
           <div className="flex flex-wrap gap-4 items-center">
             <input
@@ -165,7 +168,7 @@ const Body = () => {
 
         {/* Detected Food */}
         {detectedFood && isSearching && (
-          <div className="bg-white p-4 rounded-2xl shadow-lg mb-12 flex items-center gap-3 flex-shrink-0">
+          <div className="bg-white p-4 rounded-2xl shadow-lg mb-6 flex items-center gap-3 flex-shrink-0">
             <MdRestaurant className="text-orange-600 text-2xl" />
             <p className="text-xl text-gray-800">
               Detected Cuisine:{" "}
@@ -185,7 +188,7 @@ const Body = () => {
 
         {/* Error Messages */}
         {displayError && (
-          <div className="bg-red-100 p-4 rounded-2xl text-red-600 mb-12 flex-shrink-0">
+          <div className="bg-red-100 p-4 rounded-2xl text-red-600 mb-6 flex-shrink-0">
             {displayError}
           </div>
         )}
@@ -219,7 +222,7 @@ const Body = () => {
             <div className="mt-6 flex justify-center">
               <button
                 onClick={handleLoadMore}
-                className="bg-orange-500 text-white px-8 py-3 mb-16 rounded-lg hover:bg-orange-600 transition flex items-center gap-2"
+                className="bg-orange-500 text-white px-8 py-3 mb-16 rounded-lg hover:bg-orange-600 transition flex items-center"
               >
                 <FaArrowDown /> Show More
               </button>

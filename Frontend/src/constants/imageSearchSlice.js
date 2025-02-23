@@ -1,17 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { BASE_URL } from "../constants/constant";
 
-// Fetch restaurants based on image search
 export const fetchRestaurantsByImage = createAsyncThunk(
   "imageSearchRestaurants/fetchByImage",
   async (formData) => {
-    const response = await fetch("http://localhost:3000/api/image-search", {
+    const response = await fetch(`${BASE_URL}/api/image-search`, {
       method: "POST",
       body: formData,
     });
     const data = await response.json();
 
     const restaurantPromises = data.restaurantIds.map((id) =>
-      fetch(`http://localhost:3000/restaurants/${id}`).then((res) => res.json())
+      fetch(`${BASE_URL}/restaurants/${id}`).then((res) => res.json())
     );
     const fullRestaurants = await Promise.all(restaurantPromises);
 
@@ -23,12 +23,11 @@ const imageSearchSlice = createSlice({
   name: "imageSearchRestaurants",
   initialState: { list: [], detectedFood: "", loading: false, error: null },
   reducers: {
-    // imageSearchSlice.js
     clearImageResults: (state) => {
       state.list = [];
       state.detectedFood = null;
       state.loading = false;
-      state.error = null; // Ensure error is cleared
+      state.error = null;
     },
   },
   extraReducers: (builder) => {

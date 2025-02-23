@@ -5,7 +5,7 @@ export const fetchRestaurants = createAsyncThunk(
   "restaurants/fetchRestaurants",
   async (page) => {
     const response = await fetch(
-      `http://localhost:3000/restaurants?page=${page}&per_page=10`
+      `https://fullstack-4tzx.onrender.com/restaurants?page=${page}&per_page=10`
     );
     const data = await response.json();
     return data.restaurants || [];
@@ -17,7 +17,7 @@ export const fetchMoreRestaurants = createAsyncThunk(
   "restaurants/fetchMoreRestaurants",
   async (page) => {
     const response = await fetch(
-      `http://localhost:3000/restaurants?page=${page}&per_page=10`
+      `https://fullstack-4tzx.onrender.com/restaurants?page=${page}&per_page=10`
     );
     const data = await response.json();
     return data.restaurants || [];

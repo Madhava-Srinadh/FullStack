@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router";
 import Loader from "./Loader";
+import { BASE_URL } from "../constants/constant";
 import {
   FaHome,
   FaMapMarkerAlt,
-  FaImage,
   FaUtensils,
   FaMoneyBillWave,
   FaStar,
@@ -20,9 +20,7 @@ const RestaurantDetail = () => {
   const fetchRestaurant = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `http://localhost:3000/restaurants/${resId}`
-      );
+      const response = await fetch(`${BASE_URL}/restaurants/${resId}`);
       if (!response.ok) throw new Error("Restaurant not found");
       setResInfo(await response.json());
     } catch (err) {
@@ -70,7 +68,6 @@ const RestaurantDetail = () => {
             alt={name}
           />
         )}
-
         <div className="space-y-3 text-gray-700">
           <p className="flex items-center gap-2">
             <FaUtensils className="text-orange-600" /> {cuisines}
