@@ -6,7 +6,7 @@ const Header = () => {
       <div className="flex items-center gap-3">
         <FaUtensils className="text-white text-2xl" />
         <h1 className="text-2xl font-bold text-white tracking-wide">
-          Zomato Explorer
+          FoodXplorer
         </h1>
       </div>
     </div>
