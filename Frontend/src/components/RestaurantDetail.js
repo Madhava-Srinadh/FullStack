@@ -61,20 +61,7 @@ const RestaurantDetail = () => {
           >
             <FaHome /> Home
           </Link>
-          <Link
-            to="/location-search"
-            className="flex items-center gap-1 hover:text-orange-800"
-          >
-            <FaMapMarkerAlt /> Location
-          </Link>
-          <Link
-            to="/image-search"
-            className="flex items-center gap-1 hover:text-orange-800"
-          >
-            <FaImage /> Image
-          </Link>
         </div>
-
         <h1 className="text-3xl font-bold text-gray-800 mb-4">{name}</h1>
         {featured_image && (
           <img

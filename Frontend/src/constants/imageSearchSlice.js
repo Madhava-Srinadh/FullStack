@@ -23,9 +23,12 @@ const imageSearchSlice = createSlice({
   name: "imageSearchRestaurants",
   initialState: { list: [], detectedFood: "", loading: false, error: null },
   reducers: {
+    // imageSearchSlice.js
     clearImageResults: (state) => {
       state.list = [];
-      state.detectedFood = "";
+      state.detectedFood = null;
+      state.loading = false;
+      state.error = null; // Ensure error is cleared
     },
   },
   extraReducers: (builder) => {
