@@ -1,0 +1,69 @@
+import { useState } from "react";
+
+const ImageUpload = () => {
+  const [image, setImage] = useState(null);
+  const [detectedFood, setDetectedFood] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleImageChange = (event) => {
+    setImage(event.target.files[0]);
+  };
+
+  const uploadImage = async () => {
+    if (!image) {
+      setError("Please select an image");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    setDetectedFood("");
+
+    const formData = new FormData();
+    formData.append("image", image);
+
+    try {
+      const response = await fetch("http://localhost:3000/api/image-search", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setDetectedFood(data.detectedFood);
+      } else {
+        setError(data.error || "Failed to detect image");
+      }
+    } catch (err) {
+      setError("Server error. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Upload a Food Image</h1>
+
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleImageChange}
+        className="border p-2"
+      />
+      <button onClick={uploadImage} className="bg-blue-500 text-white p-2 ml-2">
+        Detect Food
+      </button>
+
+      {loading && <p>Detecting...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+      {detectedFood && (
+        <p className="text-green-500 font-bold">Detected: {detectedFood}</p>
+      )}
+    </div>
+  );
+};
+
+export default ImageUpload;
