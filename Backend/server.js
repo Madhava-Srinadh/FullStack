@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
-const connectDb = require("./config/database");
-const restaurantRoutes = require("./routes/restaurants");
-const imageSearchRoutes = require("./routes/imageSearch");
+const connectDb = require("./src/config/database");
+const restaurantRoutes = require("./src/routes/restaurants");
+const imageSearchRoutes = require("./src/routes/imageSearch");
 
 const app = express();
 app.use(cors());
