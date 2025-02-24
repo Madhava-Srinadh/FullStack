@@ -6,7 +6,7 @@ export const fetchRestaurants = createAsyncThunk(
   "restaurants/fetchRestaurants",
   async (page) => {
     const response = await fetch(
-      `https://fullstack-4tzx.onrender.com/restaurants?page=${page}&per_page=10`
+      `${BASE_URL}/restaurants?page=${page}&per_page=10`
     );
     const data = await response.json();
     return data.restaurants || [];
