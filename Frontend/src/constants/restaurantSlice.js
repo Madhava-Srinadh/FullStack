@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { BASE_URL } from "./constant";
 
 // 📌 Fetch normal restaurants (pagination support)
 export const fetchRestaurants = createAsyncThunk(
@@ -17,7 +18,7 @@ export const fetchMoreRestaurants = createAsyncThunk(
   "restaurants/fetchMoreRestaurants",
   async (page) => {
     const response = await fetch(
-      `https://fullstack-4tzx.onrender.com/restaurants?page=${page}&per_page=10`
+      `${BASE_URL}/restaurants?page=${page}&per_page=10`
     );
     const data = await response.json();
     return data.restaurants || [];

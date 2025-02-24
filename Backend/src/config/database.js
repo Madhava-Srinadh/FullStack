@@ -1,4 +1,4 @@
-require("dotenv").config({ path: "../../.env" }); // Load .env from root
+require("dotenv").config(); // Load .env from project root
 const mongoose = require("mongoose");
 
 const connectDb = async () => {
@@ -8,6 +8,7 @@ const connectDb = async () => {
     }
 
     await mongoose.connect(process.env.MONGO_URI);
+    console.log("✅ MongoDB Connected Successfully");
   } catch (err) {
     console.error("❌ MongoDB connection error:", err.message);
     process.exit(1);

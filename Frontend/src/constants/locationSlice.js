@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { BASE_URL } from "./constant";
 
 // Fetch restaurant details for location search results
 const fetchRestaurantDetails = async (restaurantIds) => {
   try {
     const restaurantPromises = restaurantIds.map((id) =>
-      fetch(`https://fullstack-4tzx.onrender.com/restaurants/${id}`).then(
-        (res) => res.json()
-      )
+      fetch(`${BASE_URL}/restaurants/${id}`).then((res) => res.json())
     );
     return await Promise.all(restaurantPromises);
   } catch (error) {
@@ -19,16 +18,20 @@ const fetchRestaurantDetails = async (restaurantIds) => {
 export const fetchRestaurantsByLocation = createAsyncThunk(
   "locationRestaurants/fetchByLocation",
   async ({ lat, lon, radius }) => {
-    const response = await fetch(
-      `https://fullstack-4tzx.onrender.com/restaurants/location?lat=${lat}&lon=${lon}&radius=${radius}`
-    );
-    const data = await response.json();
+    try {
+      const response = await fetch(
+        `${BASE_URL}/restaurants/location?lat=${lat}&lon=${lon}&radius=${radius}`
+      );
+      const data = await response.json();
 
-    if (!data.restaurantIds || data.restaurantIds.length === 0) {
-      return [];
+      if (!data.restaurantIds || data.restaurantIds.length === 0) {
+        return [];
+      }
+
+      return await fetchRestaurantDetails(data.restaurantIds); // Fetch full details
+    } catch (error) {
+      throw new Error("Failed to fetch restaurants by location");
     }
-
-    return await fetchRestaurantDetails(data.restaurantIds); // Fetch full details
   }
 );
 

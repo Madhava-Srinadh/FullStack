@@ -1,1 +1,1 @@
-export const BASE_URL = "https://fullstack-4tzx.onrender.com";
+export const BASE_URL = "http://localhost:3000";

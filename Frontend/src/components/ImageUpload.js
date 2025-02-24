@@ -24,6 +24,9 @@ const ImageUpload = () => {
     const formData = new FormData();
     formData.append("image", image);
 
+    console.log("Uploading image:", image); // ✅ Log selected file
+    console.log("FormData content:", formData.get("image")); // ✅ Log FormData
+
     try {
       const response = await fetch(`${BASE_URL}/api/image-search`, {
         method: "POST",
@@ -31,9 +34,10 @@ const ImageUpload = () => {
       });
 
       const data = await response.json();
+      console.log("API Response:", data); // ✅ Log API response
 
       if (response.ok) {
-        setDetectedFood(data.detectedFood);
+        setDetectedFood(data.detectedCuisine);
       } else {
         setError(data.error || "Failed to detect image");
       }
@@ -43,6 +47,7 @@ const ImageUpload = () => {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="p-4">

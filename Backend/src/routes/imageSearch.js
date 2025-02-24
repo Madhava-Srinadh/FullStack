@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const { detectCuisine } = require("../controllers/imageSearchController");
+const { detectCuisine } = require("../controllers/imageSearchController"); // ✅ Ensure correct import
 const Restaurant = require("../models/Restaurant");
 
 // Multer setup (store image in memory)
@@ -11,6 +11,8 @@ const upload = multer({ storage });
 //  POST /api/image-search - Detect cuisine & return matching restaurant IDs
 router.post("/image-search", upload.single("image"), async (req, res) => {
   try {
+    console.log("Received file:", req.file); // ✅ Log file data
+
     const cuisineResponse = await detectCuisine(req);
     if (cuisineResponse.error) {
       return res.status(400).json({ error: cuisineResponse.error });
@@ -30,10 +32,9 @@ router.post("/image-search", upload.single("image"), async (req, res) => {
 
     res.json({ detectedCuisine: cuisineType, restaurantIds });
   } catch (error) {
-    console.error(" Error processing image:", error);
+    console.error("❌ Error processing image:", error);
     res.status(500).json({ error: "Failed to detect cuisine" });
   }
 });
-
 
 module.exports = router;

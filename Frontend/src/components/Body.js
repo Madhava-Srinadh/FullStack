@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState,useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RestaurantCard from "./RestaurantCard";
 import { Link } from "react-router";
@@ -15,10 +15,10 @@ import {
   fetchRestaurantsByImage,
   clearImageResults,
 } from "../constants/imageSearchSlice";
+import { setSearching } from "../constants/searchSlice"; // Import the new action
 import Loader from "./Loader";
 import { FaSearchLocation, FaImage, FaHome, FaArrowDown } from "react-icons/fa";
 import { MdRestaurant } from "react-icons/md";
-
 const Body = () => {
   const dispatch = useDispatch();
 
@@ -39,73 +39,64 @@ const Body = () => {
     loading: loadingImage,
     error: errorImage,
   } = useSelector((state) => state.imageSearchRestaurants);
+  const isSearching = useSelector((state) => state.search.isSearching); // Get isSearching from Redux
 
-  // Local states
+  // Local states for inputs
   const [lat, setLat] = useState("");
   const [lon, setLon] = useState("");
   const [radius, setRadius] = useState("");
   const [imageFile, setImageFile] = useState(null);
-  const [isSearching, setIsSearching] = useState(false);
 
   // Fetch initial restaurants on mount
   useEffect(() => {
     dispatch(fetchRestaurants(1));
   }, [dispatch]);
 
-  // Load more restaurants
   const handleLoadMore = () => {
     dispatch(fetchMoreRestaurants(restaurants.length / 10 + 1));
   };
 
-  // Location-based search
   const handleLocationSearch = () => {
     if (!lat || !lon || !radius) {
       alert("Please enter latitude, longitude, and radius");
       return;
     }
-    setIsSearching(true);
-    dispatch(clearImageResults()); // ✅ Clear previous image search results
+    dispatch(setSearching(true)); // Set isSearching via Redux
+    dispatch(clearImageResults());
     dispatch(fetchRestaurantsByLocation({ lat, lon, radius }));
     setLat("");
     setLon("");
     setRadius("");
   };
 
-  // Image-based search
   const handleImageSearch = () => {
     if (!imageFile) {
       alert("Please select an image");
       return;
     }
-
-    setIsSearching(true);
-    dispatch(clearLocationResults()); // ✅ Clear previous location search results
-    dispatch(clearImageResults()); // ✅ Clear previous image results and errors
-
+    dispatch(setSearching(true)); // Set isSearching via Redux
+    dispatch(clearLocationResults());
+    dispatch(clearImageResults());
     const formData = new FormData();
     formData.append("image", imageFile);
     dispatch(fetchRestaurantsByImage(formData));
-
     setImageFile(null);
   };
 
-  // Reset to home page
   const handleHomeClick = () => {
-    setIsSearching(false);
+    dispatch(setSearching(false)); // Reset isSearching via Redux
     dispatch(clearLocationResults());
     dispatch(clearImageResults());
     dispatch(resetRestaurants());
     dispatch(fetchRestaurants(1));
   };
 
-  // Determine which results to display
   const results = isSearching
-    ? locationResults.length > 0
+    ? locationResults?.length > 0
       ? locationResults
-      : imageResults
-    : restaurants;
+      : imageResults || []
+    : restaurants || [];
 
-  // Determine which error to display (only if no results)
   const displayError =
     !results.length &&
     (isSearching ? errorLocation || errorImage : errorRestaurants);
@@ -113,9 +104,7 @@ const Body = () => {
   return (
     <div className="h-screen bg-peach-100 flex items-center justify-center overflow-hidden p-6">
       <div className="container mx-auto w-full max-w-6xl h-full flex flex-col">
-        {/* Search Section */}
         <div className="flex flex-col md:flex-row gap-4 mb-6 bg-white rounded-2xl shadow-lg p-6 flex-shrink-0">
-          {/* Location Search */}
           <div className="flex flex-wrap gap-4 items-center">
             <input
               type="number"
@@ -146,7 +135,6 @@ const Body = () => {
             </button>
           </div>
 
-          {/* Image Search */}
           <div className="flex gap-4 items-center">
             <label className="w-48 p-3 border border-gray-300 rounded-lg cursor-pointer flex items-center justify-center hover:bg-gray-100 transition">
               <input
@@ -166,7 +154,6 @@ const Body = () => {
           </div>
         </div>
 
-        {/* Detected Food */}
         {detectedFood && isSearching && (
           <div className="bg-white p-4 rounded-2xl shadow-lg mb-6 flex items-center gap-3 flex-shrink-0">
             <MdRestaurant className="text-orange-600 text-2xl" />
@@ -179,23 +166,19 @@ const Body = () => {
           </div>
         )}
 
-        {/* Loader */}
         {(loadingRestaurants || loadingLocation || loadingImage) && (
           <div className="flex-grow flex items-center justify-center">
             <Loader />
           </div>
         )}
 
-        {/* Error Messages */}
         {displayError && (
           <div className="bg-red-100 p-4 rounded-2xl text-red-600 mb-6 flex-shrink-0">
             {displayError}
           </div>
         )}
 
-        {/* Restaurant Results */}
         <div className="flex-grow overflow-y-auto no-scrollbar">
-          {/* Show Home Button (Only when searching) */}
           {results.length > 0 && isSearching && (
             <div className="mb-4 flex justify-center">
               <button
@@ -208,17 +191,24 @@ const Body = () => {
           )}
 
           <div className="flex flex-wrap gap-2 justify-center">
-            {results.map((restaurant) => (
-              <div key={restaurant.id} className="w-1/4 flex-shrink-0">
-                <Link to={`/restaurants/${restaurant.id}`}>
-                  <RestaurantCard resData={restaurant} />
-                </Link>
-              </div>
-            ))}
+            {Array.isArray(results) && results.length > 0
+              ? results.map((restaurant) => (
+                  <div key={restaurant.id} className="w-1/4 flex-shrink-0">
+                    <Link to={`/restaurants/${restaurant.id}`}>
+                      <RestaurantCard resData={restaurant} />
+                    </Link>
+                </div>
+                ))
+              : !loadingRestaurants &&
+                !loadingLocation &&
+                !loadingImage && (
+                  <p className="text-center text-gray-500">
+                    No restaurants found. Try adjusting your search.Click on FoodXplorer logo to go back Home.
+                  </p>
+              )}
           </div>
 
-          {/* Show More Button */}
-          {!isSearching && restaurants.length > 0 && !loadingRestaurants && (
+          {!isSearching && restaurants?.length > 0 && !loadingRestaurants && (
             <div className="mt-6 flex justify-center">
               <button
                 onClick={handleLoadMore}
@@ -228,6 +218,7 @@ const Body = () => {
               </button>
             </div>
           )}
+          <div className="mb-16"></div>
         </div>
       </div>
     </div>
