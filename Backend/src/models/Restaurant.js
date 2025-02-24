@@ -37,7 +37,7 @@ const restaurantSchema = new mongoose.Schema(
       type: String,
       validate: {
         validator: function (v) {
-          return /^http?:\/\/.+$/.test(v);
+          return /^https?:\/\/.+$/.test(v);
         },
         message: "Invalid URL format",
       },
